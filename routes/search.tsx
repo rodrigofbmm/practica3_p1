@@ -1,4 +1,4 @@
-import Axios from "npm:axios";
+import Axios from 'npm:axios@1.3.4';
 import { FreshContext, Handlers, PageProps } from "$fresh/server.ts";
 import SearchComponent from "../components/SearchComponent.tsx";
 
