@@ -1,5 +1,5 @@
 import { Handlers, PageProps, FreshContext } from "$fresh/server.ts";
-import Axios from "npm:axios";
+import Axios from 'npm:axios@1.3.4';
 import BookComponent from "../../components/BookComponent.tsx";
 
 export type Book = {
