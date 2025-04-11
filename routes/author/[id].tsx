@@ -1,5 +1,4 @@
 import { Handlers, PageProps, FreshContext } from "$fresh/server.ts";
-import Axios from 'npm:axios@1.3.4';
 import BookComponent from "../../components/BookComponent.tsx";
 
 export type Book = {
@@ -32,13 +31,13 @@ export const handler: Handlers<Author> = {
   GET: async (_req: Request, ctx: FreshContext<unknown, Author>) => {
     const { id } = ctx.params;
 
-    const authorResponse = await Axios.get<AuthorResponse>(`https://openlibrary.org/authors/${id}.json`);
-    const authorData = authorResponse.data;
+    const authorRes = await fetch(`https://openlibrary.org/authors/${id}.json`);
+    const authorData: AuthorResponse = await authorRes.json();
 
-    const worksResponse = await Axios.get<BooksResponse>(`https://openlibrary.org/authors/${id}/works.json`);
-    const worksData = worksResponse.data.entries.slice(0, 6);
+    const worksRes = await fetch(`https://openlibrary.org/authors/${id}/works.json`);
+    const worksData: BooksResponse = await worksRes.json();
 
-    const books = worksData.map((ch) => ({
+    const books = worksData.entries.slice(0, 6).map((ch) => ({
       id: ch.key.replace("/works/", ""),
       title: ch.title,
       cover: ch.covers?.[0]
@@ -49,7 +48,9 @@ export const handler: Handlers<Author> = {
 
     return ctx.render({
       name: authorData.name,
-      bio: typeof authorData.bio === "string" ? authorData.bio : authorData.bio?.value || "Biografía no disponible",
+      bio: typeof authorData.bio === "string"
+        ? authorData.bio
+        : authorData.bio?.value || "Biografía no disponible",
       books,
     });
   },
